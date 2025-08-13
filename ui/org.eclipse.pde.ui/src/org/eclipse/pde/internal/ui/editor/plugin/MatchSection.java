@@ -82,6 +82,7 @@ public class MatchSection extends PDESection implements IPartSelectionListener {
 		super.commit(onSave);
 	}
 
+	// commit
 	@Override
 	public void cancelEdit() {
 		fVersionText.cancelEdit();
