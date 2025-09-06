@@ -55,6 +55,8 @@ public class PluginGeneralInfoSection extends GeneralInfoSection {
 
 	private FormEntry fClassEntry;
 	private Button fLazyStart;
+	private Button fDeprecate;
+	private FormEntry fNotice;
 	private TypeFieldAssistDisposer fTypeFieldAssistDisposer;
 	private boolean fBlockListener = false;
 
@@ -74,6 +76,8 @@ public class PluginGeneralInfoSection extends GeneralInfoSection {
 		if (isBundle() && (formEditor instanceof ManifestEditor)) {
 			createLazyStart(parent, toolkit, actionBars);
 			createSingleton(parent, toolkit, actionBars, PDEUIMessages.PluginGeneralInfoSection_singleton);
+			createDeprecate(parent, toolkit, actionBars);
+
 		}
 	}
 
@@ -98,6 +102,8 @@ public class PluginGeneralInfoSection extends GeneralInfoSection {
 		}
 		super.removeListeners();
 	}
+
+
 
 	private void createLazyStart(Composite parent, FormToolkit toolkit, IActionBars actionBars) {
 		fLazyStart = toolkit.createButton(parent, PDEUIMessages.PluginGeneralInfoSection_lazyStart, SWT.CHECK);
@@ -162,6 +168,31 @@ public class PluginGeneralInfoSection extends GeneralInfoSection {
 			fClassEntry.setValue(type);
 		}
 	}
+
+	private void createDeprecate(Composite client, FormToolkit toolkit, IActionBars actionBars) {
+		fDeprecate = toolkit.createButton(client, "Deprecate", SWT.CHECK);
+		TableWrapData td = new TableWrapData();
+		td.colspan = 3;
+		fDeprecate.setLayoutData(td);
+		fDeprecate.setEnabled(isEditable());
+
+
+		fNotice = new FormEntry(client, toolkit, "Notice:", null, false);
+		fNotice.setEditable(!isEditable());
+
+		fDeprecate.addSelectionListener(widgetSelectedAdapter(e -> {
+			if (fDeprecate.getSelection()) {
+				fNotice.setEditable(isEditable());
+			} else if (!fDeprecate.getSelection()) {
+				fNotice.setEditable(!isEditable());
+				fNotice.setValue(null, true);
+			}
+
+
+		}));
+	}
+
+
 
 	private JavaAttributeValue createJavaAttributeValue() {
 		IProject project = getPage().getPDEEditor().getCommonProject();
